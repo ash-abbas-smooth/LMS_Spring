@@ -1,11 +1,11 @@
 package com.ss.lms.services;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ss.lms.dao.AuthorDAO;
 import com.ss.lms.dao.BookCopiesDAO;
@@ -14,6 +14,7 @@ import com.ss.lms.dao.BookLoansDAO;
 import com.ss.lms.dao.BorrowerDAO;
 import com.ss.lms.dao.BranchDAO;
 import com.ss.lms.dao.GenreDAO;
+import com.ss.lms.dao.PublisherDAO;
 import com.ss.lms.entity.Author;
 import com.ss.lms.entity.Book;
 import com.ss.lms.entity.BookCopies;
@@ -21,6 +22,7 @@ import com.ss.lms.entity.BookLoans;
 import com.ss.lms.entity.Borrower;
 import com.ss.lms.entity.Branch;
 import com.ss.lms.entity.Genre;
+import com.ss.lms.entity.Publisher;
 
 public class AdminService 
 {
@@ -44,12 +46,16 @@ public class AdminService
 	
 	@Autowired
 	GenreDAO gdao;
+	
+	@Autowired
+	PublisherDAO pdao;
+	
 	/*
 	 * READ METHODS:
 	 */
 	public List<Author> readAuthors() throws SQLException 
 	{
-		List<Author> authors = new ArrayList<>();
+		List<Author> authors = new ArrayList<Author>();
 		try {
 			authors = adao.readAuthors();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -61,7 +67,7 @@ public class AdminService
 	
 	public List<Book> readBooks() throws SQLException 
 	{
-		List<Book> books = new ArrayList<>();
+		List<Book> books = new ArrayList<Book>();
 		try {
 
 			books = bdao.readBooks();
@@ -74,7 +80,7 @@ public class AdminService
 	
 	public List<BookCopies> readBookCopies() throws SQLException 
 	{
-		List<BookCopies> bcs = new ArrayList<>();
+		List<BookCopies> bcs = new ArrayList<BookCopies>();
 		try {
 			bcs = bcdao.readBookCopies();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -86,7 +92,7 @@ public class AdminService
 	
 	public List<BookLoans> readBookLoans() throws SQLException 
 	{
-		List<BookLoans> bls = new ArrayList<>();
+		List<BookLoans> bls = new ArrayList<BookLoans>();
 		try {
 
 			bls = bldao.readBookLoans();
@@ -99,7 +105,7 @@ public class AdminService
 	
 	public List<Borrower> readBorrowers() throws SQLException
 	{
-		List<Borrower> borrowers = new ArrayList<>();
+		List<Borrower> borrowers = new ArrayList<Borrower>();
 		try {
 			borrowers = bordao.readBorrowers();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -111,7 +117,7 @@ public class AdminService
 	
 	public List<Branch> readBranches() throws SQLException 
 	{
-		List<Branch> branches = new ArrayList<>();
+		List<Branch> branches = new ArrayList<Branch>();
 		try {
 			branches = brdao.readBranches();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -124,7 +130,7 @@ public class AdminService
 	public List<Genre> readGenres() throws SQLException
 	{
 		
-		List<Genre> genres = new ArrayList<>();
+		List<Genre> genres = new ArrayList<Genre>();
 		try {
 			genres = gdao.readGenres();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -134,10 +140,22 @@ public class AdminService
 		return genres;
 	}
 	
+	public List<Publisher> readPublishers() throws SQLException
+	{
+		
+		List<Publisher> publishers = new ArrayList<Publisher>();
+		try {
+			publishers = pdao.readPublishers();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			System.out.println("Reading publishers failed");
+		}
+		return publishers;
+	}
 	/*
 	 * ADD METHODS:
 	 */
-	
+	@Transactional
 	public String addAuthor(Author author) throws SQLException
 	{
 		try
@@ -156,6 +174,7 @@ public class AdminService
 		return "Author Added Successfully";
 	}
 	
+	@Transactional
 	public String addBook(Book book) throws SQLException
 	{
 		try
@@ -174,6 +193,7 @@ public class AdminService
 		return "Book Added Successfully";
 	}
 	
+	@Transactional
 	public String addBookCopies(BookCopies bc) throws SQLException
 	{
 		try
@@ -187,6 +207,7 @@ public class AdminService
 		return "Book Copy Added Successfully";
 	}
 	
+	@Transactional
 	public String addBookLoans(BookLoans bl) throws SQLException
 	{
 		try
@@ -200,6 +221,7 @@ public class AdminService
 		return "Book Loan Added Successfully";
 	}
 	
+	@Transactional
 	public String addBorrower(Borrower b) throws SQLException
 	{
 		try
@@ -213,6 +235,7 @@ public class AdminService
 		return "Borrower Added Successfully";
 	}
 	
+	@Transactional
 	public String addBranch(Branch b) throws SQLException
 	{
 		try
@@ -226,6 +249,7 @@ public class AdminService
 		return "Library Branch Added Successfully";
 	}
 	
+	@Transactional
 	public String addGenre(Genre g) throws SQLException
 	{
 		try
@@ -244,9 +268,25 @@ public class AdminService
 		return "Genre Added Successfully";
 	}
 	
+	@Transactional
+	public String addPublishers(Publisher p) throws SQLException
+	{
+		try
+		{
+			Integer id = pdao.savePublisherWithId(p);
+		
+		} catch(ClassNotFoundException | SQLException e)
+		{
+			e.printStackTrace();
+			System.out.println("Adding Publisher Failed");
+		}
+		return "Publisher Added Successfully";
+	}
+	
 	/*
 	 * UPDATE METHODS:
 	 */
+	@Transactional
 	public String editAuthor(Author author) throws SQLException
 	{
 		try
@@ -259,6 +299,7 @@ public class AdminService
 		}
 		return "Edit Author Successfully";
 	}
+	@Transactional
 	public String editBook(Book book) throws SQLException
 	{
 		try
@@ -271,6 +312,7 @@ public class AdminService
 		} 
 		return "Book Edit Success";
 	}
+	@Transactional
 	public String editBookCopies(BookCopies bc) throws SQLException
 	{
 		try
@@ -283,6 +325,7 @@ public class AdminService
 		}
 		return "Book Copies Edit Success";
 	}
+	@Transactional
 	public String editBookLoans(BookLoans bl) throws SQLException
 	{
 		try
@@ -295,6 +338,7 @@ public class AdminService
 		}
 		return "Book Loans Edit Success";
 	}
+	@Transactional
 	public String editBorrower(Borrower b) throws SQLException
 	{
 		try
@@ -307,6 +351,7 @@ public class AdminService
 		}
 		return "Borrower Edit Success";
 	}
+	@Transactional
 	public String editBranch(Branch b) throws SQLException
 	{
 		try
@@ -319,6 +364,7 @@ public class AdminService
 		}
 		return "Branch Edit Success";
 	}
+	@Transactional
 	public String editGenre(Genre g) throws SQLException
 	{
 		try
@@ -332,9 +378,24 @@ public class AdminService
 		return "Genre Edit Success";
 	}
 	
+	@Transactional
+	public String editPublisher(Publisher p) throws SQLException
+	{
+		try
+		{
+			pdao.editPublisher(p);
+		} catch(ClassNotFoundException | SQLException e)
+		{
+			e.printStackTrace();
+			System.out.println("Edit Publisher Failed");
+		}
+		return "Publisher Edit Successfully";
+	}
+	
 	/*
 	 * DELETE METHODS:
 	 */
+	@Transactional
 	public String deleteAuthor(Author author) throws SQLException
 	{
 		try
@@ -348,6 +409,7 @@ public class AdminService
 		return "Deleted Author";
 	}
 
+	@Transactional
 	public String deleteBook(Book book) throws SQLException
 	{
 		try
@@ -361,6 +423,7 @@ public class AdminService
 		return "Book Delete Success";
 	}
 
+	@Transactional
 	public String deleteBookCopies(BookCopies bc) throws SQLException
 	{
 		try
@@ -374,6 +437,7 @@ public class AdminService
 		return "Book Copies Delete Success";
 	}
 
+	@Transactional
 	public String deleteBookLoans(BookLoans bl) throws SQLException
 	{
 		try
@@ -387,6 +451,7 @@ public class AdminService
 		return "Book Loans Delete Success";
 	}
 
+	@Transactional
 	public String deleteBorrower(Borrower b) throws SQLException
 	{
 		try
@@ -400,6 +465,7 @@ public class AdminService
 		return "Borrower Delete Success";
 	}
 
+	@Transactional
 	public String deleteBranch(Branch b) throws SQLException
 	{
 		try
@@ -413,6 +479,7 @@ public class AdminService
 		return "Branch Delete Success";
 	}
 	
+	@Transactional
 	public String deleteGenre(Genre g) throws SQLException
 	{
 		try
@@ -424,5 +491,19 @@ public class AdminService
 			System.out.println("Delete Genre Failed");
 		}
 		return "Genre Delete Success";
+	}
+	
+	@Transactional
+	public String deletePublisher(Publisher p) throws SQLException
+	{
+		try
+		{
+			pdao.deletePublisher(p);
+		} catch(ClassNotFoundException | SQLException e)
+		{
+			e.printStackTrace();
+			System.out.println("Delete Publisher Failed");
+		}
+		return "Publisher Delete Successfully";
 	}
 }
